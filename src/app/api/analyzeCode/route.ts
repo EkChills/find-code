@@ -4,7 +4,7 @@ import { Pinecone } from "@pinecone-database/pinecone";
 import { nanoid } from "nanoid";
 import { openai, pc } from "../../../lib/utils";
 
-export async function GET(req: NextRequest) {
+export async function POST(req: NextRequest) {
   const fileContents: { name: string; content: string }[] = await req.json();
   const indexName = "find-code-index";
 
