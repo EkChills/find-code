@@ -3,8 +3,8 @@
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import SyntaxHighlighter from 'react-syntax-highlighter';
-import { docco, dark } from 'react-syntax-highlighter/dist/esm/styles/hljs';
+import SyntaxHighlighter from "react-syntax-highlighter";
+import { docco, dark } from "react-syntax-highlighter/dist/esm/styles/hljs";
 import { Separator } from "@/components/ui/separator";
 import {
   ChangeEvent,
@@ -14,7 +14,10 @@ import {
 } from "react";
 import { analyzeAction } from "@/lib/actions/analyzeAction";
 import { searchCodeAction } from "@/lib/actions/searchCodeAction";
-import { RecordMetadata, ScoredPineconeRecord } from "@pinecone-database/pinecone";
+import {
+  RecordMetadata,
+  ScoredPineconeRecord,
+} from "@pinecone-database/pinecone";
 
 export function Hero() {
   const [fileContent, setFileContent] = useState<
@@ -22,9 +25,11 @@ export function Hero() {
   >([]);
   const [isPending, startTransition] = useTransition();
   const [isSearching, startSearching] = useTransition();
-  const [searchMatches, setSearchMatches] = useState<ScoredPineconeRecord<RecordMetadata>[]>([])
+  const [searchMatches, setSearchMatches] = useState<
+    ScoredPineconeRecord<RecordMetadata>[]
+  >([]);
   const [canSearch, setCanSearch] = useState(false);
-  const [query, setQuery] = useState<string>('')
+  const [query, setQuery] = useState<string>("");
 
   const handleFileChange = (event: ChangeEvent<HTMLInputElement>) => {
     const filesObj = (event.target as HTMLInputElement).files;
@@ -49,20 +54,20 @@ export function Hero() {
   };
 
   async function handleAnalyze() {
-    startTransition(async() => {
+    startTransition(async () => {
       const res = await analyzeAction(fileContent);
-      if(res.success) {
+      if (res.success) {
         setCanSearch(true);
       }
     });
   }
 
   function handleSearch() {
-    startSearching(async() => {
-      const result = await searchCodeAction(query)
+    startSearching(async () => {
+      const result = await searchCodeAction(query);
       console.log(result);
-      setSearchMatches(result.matches)
-    })
+      setSearchMatches(result.matches);
+    });
   }
 
   return (
@@ -87,48 +92,55 @@ export function Hero() {
             <Button
               className="w-full"
               style={{
-                opacity:isPending ? 0.5 : 1,
+                opacity: isPending ? 0.5 : 1,
               }}
               onClick={handleAnalyze}
               variant="default"
             >
               Analyze code
             </Button>
-            {canSearch && <div className="grid gap-1.5">
-              <Label htmlFor="search-input">Search code</Label>
-              <Input
-                className="w-full"
-                onChange={(e) => setQuery(e.target.value)}
-                id="search-input"
-                placeholder="Enter search string"
-                type="text"
-              />
-                 <Button
-              className="w-full"
-              style={{
-                opacity:isSearching ? 0.5 : 1,
-              }}
-              onClick={handleSearch}
-              variant="default"
-            >
-              search code
-            </Button>
-            </div>}
+            {canSearch && (
+              <div className="grid gap-1.5">
+                <Label htmlFor="search-input">Search code</Label>
+                <Input
+                  className="w-full"
+                  onChange={(e) => setQuery(e.target.value)}
+                  id="search-input"
+                  placeholder="Enter search string"
+                  type="text"
+                />
+                <Button
+                  className="w-full"
+                  style={{
+                    opacity: isSearching ? 0.5 : 1,
+                  }}
+                  onClick={handleSearch}
+                  variant="default"
+                >
+                  search code
+                </Button>
+              </div>
+            )}
             <div className="grid gap-2">
               <p className="text-sm font-medium">Top Matches:</p>
               <div className="grid gap-2">
-                {
-                  searchMatches.map((match, idx) => {
-                    return (
-                      <div key={match.id} className="flex items-center justify-between">
-                      <p className="text-sm">{match.metadata?.fileName as string}</p>
-                      <p className="text-sm text-gray-500 dark:text-gray-400">{match.score}</p>
+                {searchMatches.map((match, idx) => {
+                  return (
+                    <div
+                      key={match.id}
+                      className="flex items-center justify-between"
+                    >
+                      <p className="text-sm">
+                        {match.metadata?.fileName as string}
+                      </p>
+                      <p className="text-sm text-gray-500 dark:text-gray-400">
+                        {match.score}
+                      </p>
                     </div>
-                    )
-                  })
-                }
+                  );
+                })}
               </div>
-              </div>
+            </div>
           </div>
           <div className="space-y-4">
             <h2 className="text-2xl font-bold tracking-tight">
@@ -145,11 +157,11 @@ export function Hero() {
                     <Separator className="my-4" />
                     <div className="whitespace-pre-wrap break-words text-sm text-gray-500 dark:text-gray-400 ">
                       <SyntaxHighlighter style={docco} language="typescript">
-                      {`// ${file.name}
+                        {`// ${file.name}
                   
                   ${file.content}
               `}
-              </SyntaxHighlighter>
+                      </SyntaxHighlighter>
                     </div>
                   </div>
                 );
