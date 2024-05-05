@@ -17,7 +17,9 @@ import { openai, pc } from "@/lib/utils";
 // });
 
 export async function GET(req: NextRequest) {
-  const {query}:{query:string} = await req.json()
+  const queryUrl = await req.nextUrl.searchParams
+  const query = queryUrl.get('query')!
+
   try {
     const queryEmbedding = await openai.embeddings.create({
       model: "text-embedding-3-small",
