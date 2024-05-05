@@ -8,7 +8,10 @@ export function cn(...inputs: ClassValue[]) {
 }
 
 export const openai = new OpenAI({
-  apiKey: process.env.NEXT_PUBLIC_OPENAI_API_KEY,dangerouslyAllowBrowser:true
+  apiKey: process.env.NEXT_PUBLIC_OPENAI_API_KEY,
+  dangerouslyAllowBrowser: true,
 });
 
-export const pc = new Pinecone({ apiKey: process.env.NEXT_PUBLIC_PINECONE_API_KEY as string });
+export const pc = new Pinecone({
+  apiKey: process.env.NEXT_PUBLIC_PINECONE_API_KEY as string,
+});

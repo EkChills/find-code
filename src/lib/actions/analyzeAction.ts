@@ -6,27 +6,26 @@ import { Pinecone } from "@pinecone-database/pinecone";
 import { nanoid } from "nanoid";
 import { openai, pc } from "../utils";
 
+// await pc.createIndex({
+//   name: indexName,
+//   dimension: 1536,
+//   metric: "cosine",
+//   spec: {
+//     serverless: {
+//       cloud: "aws",
+//       region: "us-east-1",
+//     },
+//   },
+// });
 
-
-    // await pc.createIndex({
-    //   name: indexName,
-    //   dimension: 1536,
-    //   metric: "cosine",
-    //   spec: {
-    //     serverless: {
-    //       cloud: "aws",
-    //       region: "us-east-1",
-    //     },
-    //   },
-    // });
-
-export async function analyzeAction( fileContents:{ name: string; content: string }[] , formData?:FormData) {
-  
-
+export async function analyzeAction(
+  fileContents: { name: string; content: string }[],
+  formData?: FormData,
+) {
   const indexName = "find-code-index";
 
   try {
-    for(const fileContent of fileContents) {
+    for (const fileContent of fileContents) {
       const embedding = await openai.embeddings.create({
         model: "text-embedding-3-small",
         input: fileContent.content,
@@ -39,28 +38,22 @@ export async function analyzeAction( fileContents:{ name: string; content: strin
         {
           id: nanoid(7),
           values: embedding.data[0].embedding,
-          metadata:{
-            codeContent:fileContent.content,
-            fileName:fileContent.name,
-          }
+          metadata: {
+            codeContent: fileContent.content,
+            fileName: fileContent.name,
+          },
         },
       ]);
-
     }
 
- 
-
-      return{
-        success: true,
-      };
-    }
-   catch (error) {
+    return {
+      success: true,
+    };
+  } catch (error) {
     console.log(error);
-    return {error, success: false};
+    return { error, success: false };
   }
 }
-
-
 
 // export async function analyzeAction(input: { name: string; content: string }[], formData?: FormData) {
 //   console.log("the input", input);
